@@ -1,0 +1,21 @@
+- nextTick() et tickTime = 100ms
+- divide windows to grid
+- setinterval tickTime  (== nextTick) => takeSnapshot
+- à partir du snapshot récupérer infos d'ennemis sur cases à cote
+- nextTick => voir si on a survéccu ou pas et en fonction sortir l'outpout
+- enregistrer une nouvelle entrée dans le json training.json
+- itérer 5-10k fois
+utiliser tensorflow pour batir un NN avec le training.json
+
+ENJOY :D
+
+.monster-deimos-asset
+.avatar-deimos-asset
+#projectile-###
+
+
+dans le reseau de neurone poru le training :
+aussi passer la vie. Si la vie à baissé d'un tick à l'autre, ce n'était pas le bon choix
+ainsi Grid ne récupère pas QUE la grid. C'est une interface pour récupérer les données du jeu
+Donc faut créer un truc genre GameWatcher ou DataExtractor ou ce que tu veux qui se charge de récupérer les
+données. (en plus de grid ? Ou transformer grid pour devenir ce game extractor ? à voir...)
