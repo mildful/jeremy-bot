@@ -10,10 +10,11 @@ class VirtualGrid {
         this._cols = cols
         this._rows = rows
         // public fields
-        this.grid = new Array(cols * rows)
+        this.grid = new Array(cols * rows).fill(-1)
     }
 
     set (x, y, value) {
+        if (value === undefined) throw new Error('`value` must be defined.')
         if (x < 0 || x > this._cols) throw new Error('`x` is out of range.')
         if (y < 0 || y > this._rows) throw new Error('`y` is out of range.')
         this.grid[VirtualGrid.index(x, y)] = value
@@ -25,7 +26,7 @@ class VirtualGrid {
         return this.grid[VirtualGrid.index(x, y)]
     }
     
-    getArray () {
+    getFormattedArrays () {
         let rows = []
         for (let i = 0; i < this._rows; i++) {
             const row = _.slice(this.grid, VirtualGrid.index(0, i), this._cols)
@@ -56,12 +57,12 @@ class Grid {
     }
 
     evalRawTransforms ({ player, enemies, bullets }) {
-        this.vgrid.set(10, 12)
+        this.vgrid.set(10, 12, Grid.GAME_OBJECTS.Player)
         this.computePlayerTransform(player)
     }
 
     computePlayerTransform (transform) {
-        console.log(transform)
+        // console.log(transform)
     }
 }
 
