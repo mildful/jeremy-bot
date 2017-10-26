@@ -1,5 +1,5 @@
 const Utils = {
-    noop: () => {}
+  noop: () => {}
 }
 
 module.exports = Utils

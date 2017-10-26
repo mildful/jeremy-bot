@@ -1,11 +1,11 @@
 class GameAPI {
-    constructor (tickTime) {
-        this.tickTime = tickTime || 200
-    }
+  constructor (tickTime) {
+    this.tickTime = tickTime || 200
+  }
 
-    nextTick () {
+  nextTick () {
 
-    }
+  }
 }
 
 module.exports = GameAPI
