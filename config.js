@@ -4,6 +4,7 @@ const Config = {
   gridCols: 160,
   gridRows: 90,
   debug: true,
+  logFolder: 'logs/',
   train: false
 }
 

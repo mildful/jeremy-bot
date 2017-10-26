@@ -31,26 +31,35 @@ class Grid {
 }
 
 Grid.GAME_OBJECTS = { Player: 0, Enemy: 1, Bullet: 2 }
-Grid.getRawTransforms = function () {
-  const transforms = {
-    player: undefined,
-    enemies: [],
-    bullets: []
+// todo: move this out Grid
+Grid.getBrowserDatas = function () {
+  const datas = {
+    transforms: {
+      player: undefined,
+      enemies: [],
+      bullets: []
+    },
+    hp: null,
+    gameover: false
   }
+
   // player
-  transforms.player = document.getElementsByClassName('avatar-deimos-asset')[0].style.transform
+  datas.transforms.player = document.getElementsByClassName('avatar-deimos-asset')[0].style.transform
   // enemies
   const enemies = document.getElementsByClassName('monster-deimos-asset')
   for (let i = 0, l = enemies.length; i < l ; i++) {
-    transforms.enemies.push(enemies[i].style.transform)
+    datas.transforms.enemies.push(enemies[i].style.transform)
   }
   // bullets
   const bullets = document.querySelectorAll('[id^=projectile]')
   for (let i = 0, l = bullets.length; i < l ; i++) {
-    transforms.bullets.push(bullets[i].style.transform)
+    datas.transforms.bullets.push(bullets[i].style.transform)
   }
-  console.log(transforms)
-  return transforms
+
+  // hp
+  datas.hp = parseInt(document.getElementById('hp-bar-current').style.width)
+
+  return datas
 }
 
 module.exports = Grid
