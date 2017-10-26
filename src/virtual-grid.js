@@ -39,6 +39,10 @@ class VirtualGrid {
     }
     return rows
   }
+
+  reset () {
+    this.grid.fill(-1)
+  }
 }
 
 module.exports = VirtualGrid

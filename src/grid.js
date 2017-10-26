@@ -27,21 +27,24 @@ class Grid {
     this.rows = rows
   }
 
-  evalRawTransforms ({ player, enemies, bullets }) {
-    this.computePlayerTransform(player)
-  }
-
   calcCoordsFromPixels (px, isHeight = null) {
     // WARNING : there is no check on isHeight because I'm not suppose to edit this without knowing
     // what I'm doing. isHeight MUST BE EXPLICITLY SET TO A VALID BOOLEAN VALUE
     const cellSize = isHeight ? this._ySize : this._xSize
-    return Math.ceil(cellSize / px)
+    return Math.ceil(px / cellSize)
   }
 
-  computePlayerTransform (transform) {
+  evalRawTransforms ({ player, enemies, bullets }) {
+    this.vgrid.reset()
+    this.evalRawTransform(Grid.GAME_OBJECTS.Player, player)
+    enemies.forEach(enemy => this.evalRawTransform(Grid.GAME_OBJECTS.Enemy, enemy))
+    bullets.forEach(bullet => this.evalRawTransform(Grid.GAME_OBJECTS.Bullet, bullet))
+  }
+
+  evalRawTransform (gameObject, transform) {
     const pixels = Grid.getPixelsFromTranslate(transform)
     this.vgrid.set(
-      Grid.GAME_OBJECTS.Player,
+      gameObject,
       this.calcCoordsFromPixels(pixels.x, false),
       this.calcCoordsFromPixels(pixels.y, true)
     )
