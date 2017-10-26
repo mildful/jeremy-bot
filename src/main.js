@@ -3,6 +3,7 @@ const fs = require('fs')
 
 const Config = require('../config')
 const Grid = require('./grid')
+const BrowserAPI = require('./browser-api')
 const UI = require('./UI')
 const Logger = require('./logger')
 
@@ -28,20 +29,18 @@ const grid = new Grid(
 const ui = new UI(grid, false)
 
 // start !
-const getBrowserDatasProxy = new Function('return ' + Grid.getBrowserDatas.toString())()
+const getBrowserDatasProxy = new Function('return ' + BrowserAPI.getBrowserDatas.toString())()
 const compute = () => {
   return nightmare
     .evaluate(getBrowserDatasProxy)
     .then(datas => {
       grid.evalRawTransforms(datas.transforms)
       // ui.render()
-      // Logger.logGrid(ui.getStringGrid(), err => {
-      //   if (err) console.error(err)
-      // })
       const metadatas = {
         hp: datas.hp,
         gameover: datas.gameover
       }
+      // doing this add ~20ms of computation
       Logger.logDatas(metadatas, ui.getStringGrid(), err => {
         if (err) console.error(err)
       })
