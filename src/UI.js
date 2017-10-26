@@ -6,7 +6,7 @@ class UI {
   constructor (grid, blessedEnable = true) {
     this.dataGrid = grid
     // number of grid columns
-    this.dataGridCols = grid.vgrid.getFormattedArrays()[0].length
+    this.dataGridCols = grid.vgrid.getRows()[0].length
     if (blessedEnable) {
       this.screen = blessed.screen()
       this.init()
@@ -41,7 +41,7 @@ class UI {
 
   render () {
     // update grid
-    const grid = this.dataGrid.vgrid.getFormattedArrays()
+    const grid = this.dataGrid.vgrid.getRows()
 
     this.uiGrid.setData({
       headers: ['O', ...Array.apply(null, {length: this.dataGridCols}).map(Number.call, Number)],
@@ -57,27 +57,31 @@ class UI {
   getStringGrid () {
     const threezer = str => str.length >= 3 ? str : new Array(3 + 1 - str.length).join(' ') + str
     const cellizer = str => `${threezer(str)} `
-    // const linizer = str => `${str}\r\n${new Array(str.length).join('_')}\r\n`
     const linizer = str => `${str}\r\n`
-    const grid = this.dataGrid.vgrid.getFormattedArrays()
     let res = ''
-
-    // header
-    let header = cellizer('xxx')
-    Array.apply(null, {length: this.dataGridCols})
-      .map(Number.call, Number)
-      .forEach(strIndex => header += cellizer(strIndex.toString()))
-    res += linizer(header)
 
     // body
     let body = ''
-    const computedGrid = this.dataGrid.vgrid.grid.map(v => cellizer(v.toString()))
-    for (let i = 0, l = this.dataGrid.vgrid.rows; i < l; i++) {
+    // 1-loop way. But redoundant with vgrid.getRooms()
+    /*const computedGrid = this.dataGrid.vgrid.grid.map(v => cellizer(v.toString()))
+    for (let i = this.dataGrid.vgrid.rows; i > 0; i--) {
       const index = this.dataGrid.vgrid.index(0, i)
       const row = _.slice(computedGrid, index, index + this.dataGrid.vgrid.cols)
       body += linizer(cellizer(i.toString()) + row.join(''))
-    }
+    }*/
+    // 2-loops way. Using vgrid.getRows()
+    this.dataGrid.vgrid.getRows().forEach((row, index, rows) => {
+      let strRow = row.map(v => cellizer(v.toString()))
+      body += linizer(cellizer(`${rows.length - 1 - index}`) + strRow.join(''))
+    })
     res += body
+
+    // footer
+    let footer = cellizer('xxx')
+    Array.apply(null, {length: this.dataGridCols})
+      .map(Number.call, Number)
+      .forEach(strIndex => footer += cellizer(strIndex.toString()))
+    res += linizer(footer)
 
     return res
   }

@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
 class VirtualGrid {
-  static index (cols, x, y) {
-    return x + (cols * y)
+  static index (cols, rows, x, y) {
+    return cols * (rows - y - 1) + x
   }
 
   constructor (cols, rows) {
@@ -14,10 +14,10 @@ class VirtualGrid {
   }
 
   index (x, y) {
-    return VirtualGrid.index(this.cols, x, y)
+    return VirtualGrid.index(this.cols, this.rows, x, y)
   }
 
-  set (x, y, value) {
+  set (value, x, y) {
     if (value === undefined) throw new Error('`value` must be defined.')
     if (x < 0 || x > this.cols) throw new Error('`x` is out of range.')
     if (y < 0 || y > this.rows) throw new Error('`y` is out of range.')
@@ -30,10 +30,11 @@ class VirtualGrid {
     return this.grid[this.index(x, y)]
   }
 
-  getFormattedArrays () {
+  getRows () {
     let rows = []
-    for (let i = 0; i < this.rows; i++) {
-      const row = _.slice(this.grid, this.index(0, i), this.cols)
+    for (let i = this.rows - 1; i >= 0; i--) {
+      const startIndex = this.index(0, i)
+      const row = _.slice(this.grid, startIndex, startIndex + this.cols)
       rows.push(row)
     }
     return rows
