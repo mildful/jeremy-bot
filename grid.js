@@ -1,40 +1,4 @@
-const _ = require('lodash');
-
-class VirtualGrid {
-    static index (x, y) {
-        return x * (y + 1)
-    }
-
-    constructor (cols, rows) {
-        // private fields
-        this._cols = cols
-        this._rows = rows
-        // public fields
-        this.grid = new Array(cols * rows).fill(-1)
-    }
-
-    set (x, y, value) {
-        if (value === undefined) throw new Error('`value` must be defined.')
-        if (x < 0 || x > this._cols) throw new Error('`x` is out of range.')
-        if (y < 0 || y > this._rows) throw new Error('`y` is out of range.')
-        this.grid[VirtualGrid.index(x, y)] = value
-    }
-
-    get (x, y) {
-        if (x < 0 || x > this._cols) throw new Error('`x` is out of range.')
-        if (y < 0 || y > this._rows) throw new Error('`y` is out of range.')
-        return this.grid[VirtualGrid.index(x, y)]
-    }
-    
-    getFormattedArrays () {
-        let rows = []
-        for (let i = 0; i < this._rows; i++) {
-            const row = _.slice(this.grid, VirtualGrid.index(0, i), this._cols)
-            rows.push(row)
-        }
-        return rows
-    }
-}
+const VirtualGrid = require('./virtual-grid')
 
 class Grid {
     /**

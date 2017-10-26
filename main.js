@@ -1,9 +1,11 @@
 const Nightmare = require('nightmare')
+const fs = require('fs')
 
 const Config = require('./config')
 const Utils = require('./utils')
 const Grid = require('./grid')
 const UI = require('./UI')
+const Logger = require('./logger')
 
 // init nightmare
 let nightmareConfig = {
@@ -24,8 +26,7 @@ const grid = new Grid(
 )
 
 // init UI
-const ui = new UI(grid)
-ui.init()
+const ui = new UI(grid, false)
 
 // start !
 const gridRawTransformsProxy = new Function('return ' + Grid.getRawTransforms.toString())()
@@ -38,6 +39,9 @@ nightmare
     .evaluate(gridRawTransformsProxy)
     .then(rawTransforms => {
         grid.evalRawTransforms(rawTransforms)
-        ui.render()
+        // ui.render()
+        Logger.logGrid(ui.getStringGrid(), err => {
+            if (err) console.error(err)
+        })
     })
     .catch(console.error)

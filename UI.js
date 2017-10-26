@@ -1,13 +1,18 @@
 const blessed = require('blessed');
 const contrib = require('blessed-contrib')
+const _ = require('lodash')
+
+const VirtualGrid = require('./virtual-grid')
 
 class UI {
-    constructor (grid) {
-        this.screen = blessed.screen()
+    constructor (grid, blessedEnable = true) {
         this.dataGrid = grid
         // number of grid columns
         this.dataGridCols = grid.vgrid.getFormattedArrays()[0].length
-        this.init()
+        if (blessedEnable) {
+            this.screen = blessed.screen()
+            this.init()
+        }
     }
 
     init () {
@@ -49,6 +54,34 @@ class UI {
         })
 
         this.screen.render()
+    }
+
+    getStringGrid () {
+        const threezer = str => str.length >= 3 ? str : new Array(3 + 1 - str.length).join(' ') + str
+        const cellizer = str => `${threezer(str)} `
+        // const linizer = str => `${str}\r\n${new Array(str.length).join('_')}\r\n`
+        const linizer = str => `${str}\r\n`
+        const grid = this.dataGrid.vgrid.getFormattedArrays()
+        let res = ''
+
+        // header
+        let header = cellizer('xxx')
+        Array.apply(null, {length: this.dataGridCols})
+            .map(Number.call, Number)
+            .forEach(strIndex => header += cellizer(strIndex.toString()))
+        res += linizer(header)
+
+        // body
+        let body = ''
+        const computedGrid = this.dataGrid.vgrid.grid.map(v => cellizer(v.toString()))
+        for (let i = 0, l = this.dataGrid.vgrid.rows; i < l; i++) {
+            const index = this.dataGrid.vgrid.index(0, i)
+            const row = _.slice(computedGrid, index, index + this.dataGrid.vgrid.cols)
+            body += linizer(cellizer(i.toString()) + row.join(''))
+        }
+        res += body
+        
+        return res
     }
 }
 
