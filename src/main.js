@@ -38,8 +38,7 @@ const update = function () {
   Logger.logDatas(game.gameDatas.metadatas, ui.getStringGrid(), err => {
     if (err) console.error(err)
   })
-  console.log('jump')
-  game.jump()
+  game.punch()
   return game.gameDatas.metadatas.hp <= 0
 }
 

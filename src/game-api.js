@@ -20,7 +20,7 @@ const _getGameDatas = function () {
   const timeStr = document.getElementById('game-timer').textContent.split(':')
   datas.metadatas.score = timeStr[0] * 60 + parseFloat(timeStr[1])
 
-  // game ended
+  // return if game over
   if (datas.metadatas.hp <= 0) return datas
 
   // player
@@ -54,13 +54,15 @@ const _getPixelsFromTranslate = function (str) {
 class GameAPI {
   static createCustomNightmareActions () {
     const actionMaker = (name, type) => {
-      // see https://github.com/rosshinkley/nightmare-examples/blob/master/docs/beginner/action.md
+      // https://github.com/rosshinkley/nightmare-examples/blob/master/docs/beginner/action.md
+      // https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentssendinputeventevent
       Nightmare.action(name, function (name, options, parent, win, renderer, done) {
-        parent.respondTo(name, function (keyCode) {
+        parent.respondTo(name, function (keyCode, respondDone) {
+          win.focus()
           win.webContents.sendInputEvent({
             type: type,
             keyCode: keyCode
-          })
+          }).then(respondDone).catch(console.error)
         })
         done()
       }, function (keyCode, done) {
@@ -104,7 +106,9 @@ class GameAPI {
   startNewGame () {
     this._init()
     this.gameState = GameAPI.GAME_STATES.Playing
-    return this.nightmare.wait('#start').click('#start').wait('.avatar-deimos-asset')
+    return this.nightmare
+      .evaluate(() => document.getElementById('start') ? '#start' : '#menu_restart')
+      .then(id => this.nightmare.click(id).wait('.avatar-deimos-asset'))
   }
 
   readGame () {
@@ -166,6 +170,8 @@ class GameAPI {
   }
 
   stopMoving () {
+    this.gameDatas.controlsState.movingRight = false
+    this.gameDatas.controlsState.movingLeft = false
     this.nightmare.releaseKey(GameAPI.KEY_CONTROLS.Right)
     this.nightmare.releaseKey(GameAPI.KEY_CONTROLS.Left)
   }
@@ -180,12 +186,12 @@ class GameAPI {
 }
 
 GameAPI.GAME_STATES = { Playing: 0, Over: 1 }
-// see https://www.w3.org/TR/2006/WD-DOM-Level-3-Events-20060413/keyset.html
+// https://github.com/electron/electron/blob/master/docs/api/accelerator.md
 GameAPI.KEY_CONTROLS = {
   Right: 'Right',
   Left: 'Left',
   Jump: 'Up',
-  Punch: '\u0020',
+  Punch: 'Space',
 }
 
 module.exports = GameAPI

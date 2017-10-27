@@ -32,6 +32,19 @@ class Logger {
       }
     })
   }
+
+  static logError (err, cb = () => {}) {
+    const path = Config.logFolder + 'logerrors.txt'
+    const content = `========== ${new Date().toTimeString()} ==========\r\n` + `${err.stack}\r\n\r\n`
+
+    fs.exists(path, exists => {
+      if (exists) {
+        fs.appendFile(path, content, cb)
+      } else {
+        fs.writeFile(path, content, cb)
+      }
+    })
+  }
 }
 
 module.exports = Logger

@@ -20,7 +20,7 @@ class Grid {
     this.rows = rows
   }
 
-  calcCoordsFromPixels (px, isHeight = null) {
+  calcCoordFromPixels (px, isHeight = null) {
     // WARNING : there is no check on isHeight because I'm not suppose to edit this without knowing
     // what I'm doing. isHeight MUST BE EXPLICITLY SET TO A VALID BOOLEAN VALUE
     const cellSize = isHeight ? this._ySize : this._xSize
@@ -37,8 +37,8 @@ class Grid {
   evalPixelPosition (gameObject, pixelPosition) {
     this.vgrid.set(
       gameObject,
-      this.calcCoordsFromPixels(pixelPosition.x, false),
-      this.calcCoordsFromPixels(pixelPosition.y, true)
+      this.calcCoordFromPixels(pixelPosition.x, false),
+      this.calcCoordFromPixels(pixelPosition.y, true)
     )
   }
 }

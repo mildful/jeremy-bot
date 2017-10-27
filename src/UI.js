@@ -63,12 +63,14 @@ class UI {
     // body
     let body = ''
     // 1-loop way. But redoundant with vgrid.getRooms()
-    /*const computedGrid = this.dataGrid.vgrid.grid.map(v => cellizer(v.toString()))
+    /*
+    const computedGrid = this.dataGrid.vgrid.grid.map(v => cellizer(v.toString()))
     for (let i = this.dataGrid.vgrid.rows; i > 0; i--) {
       const index = this.dataGrid.vgrid.index(0, i)
       const row = _.slice(computedGrid, index, index + this.dataGrid.vgrid.cols)
       body += linizer(cellizer(i.toString()) + row.join(''))
-    }*/
+    }
+    */
     // 2-loops way. Using vgrid.getRows()
     this.dataGrid.vgrid.getRows().forEach((row, index, rows) => {
       let strRow = row.map(v => cellizer(v.toString()))
