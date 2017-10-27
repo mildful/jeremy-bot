@@ -56,7 +56,7 @@ async function start () {
   }
   const endTime = +new Date()
   const delta = endTime - startTime
-  const delay = delta < 1000 ? 1000 : 0
+  const delay = delta < Config.tickTime ? Config.tickTime : 0
   console.log(delta, delay)
   setTimeout(start, delay)
 }
