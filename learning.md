@@ -4,7 +4,7 @@ This document describe the learning process. It consists of neural networks and 
 
 ## How does it works
 
-We have a **lot** of inputs : `gridCels + 2` (so with current settings something like ~15k).
+We have a **lot** of inputs : `gridCels + 4` (so with current settings something like ~15k).
 - the grid. mapping : {
                     -1 => 0,
                     0 => 0.3,
@@ -12,7 +12,14 @@ We have a **lot** of inputs : `gridCels + 2` (so with current settings something
                     2 => 1
                 }
 - life. mapping : { 0 => 0, 250 => 1 }
-- enemieCount. mapping : { 0 => 0, 30 => 1 } (30 seems to be a viable max range)
+- enemiesCount. mapping : { 0 => 0, 30 => 1 } (30 seems to be a viable max range)
+- movement
+    - < .45  : move left key is pressed
+    - > .55  : move right key is pressed
+    - default: no movement keys pressed
+- jump
+    - > .5   : jump key is pressed
+    - default: jump key is not pressed
 
 We also have 3 outputs :
 - movement

@@ -7,6 +7,7 @@ const UI = require('./UI')
 const Logger = require('./logger')
 
 // init nightmare
+GameAPI.createCustomNightmareActions()
 let nightmareConfig = {
   show: !Config.train,
   width: Config.width,
@@ -37,6 +38,8 @@ const update = function () {
   Logger.logDatas(game.gameDatas.metadatas, ui.getStringGrid(), err => {
     if (err) console.error(err)
   })
+  console.log('jump')
+  game.jump()
   return game.gameDatas.metadatas.hp <= 0
 }
 
