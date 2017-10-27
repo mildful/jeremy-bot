@@ -1,9 +1,8 @@
 const Nightmare = require('nightmare')
-const fs = require('fs')
 
 const Config = require('../config')
 const Grid = require('./grid')
-const BrowserAPI = require('./browser-api')
+const GameAPI = require('./game-api')
 const UI = require('./UI')
 const Logger = require('./logger')
 
@@ -28,27 +27,37 @@ const grid = new Grid(
 // init UI
 const ui = new UI(grid, false)
 
-// start !
-const getGameDatasProxy = new Function('return ' + GameAPI.getGameDatas.toString())()
-const compute = () => {
-  return nightmare
-    .evaluate(getGameDatasProxy)
-    .then(datas => {
-      grid.evalPixelPositions(datas.pixelPositions)
-      // ui.render()
-      // doing this add ~25ms of computation
-      Logger.logDatas(datas.metadatas, ui.getStringGrid(), err => {
-        if (err) console.error(err)
-      })
-      return datas.metadatas.hp <= 0
-    })
+// init game
+const game = new GameAPI(nightmare)
+
+const update = function () {
+  grid.evalPixelPositions(game.gameDatas.pixelPositions)
+  // ui.render()
+  // doing this add ~25ms of computation (at least, on my computer of course - Win7 64bits, i7 6600U, 8GB ram)
+  Logger.logDatas(game.gameDatas.metadatas, ui.getStringGrid(), err => {
+    if (err) console.error(err)
+  })
+  return game.gameDatas.metadatas.hp <= 0
 }
 
-async function start () {
+let interval;
+
+game.nextTick(update)
+game.onGameEnd(() => {
+  clearInterval(interval)
+  console.log('Game over. SCORE: ', game.gameDatas.metadatas.score)
+})
+game.startNewGame()
+  .then(() => interval = setInterval(() => game.readGame(), Config.tickTime))
+  .catch(console.error)
+
+// use this to debug read time
+/*
+async function startReadingGame () {
   const startTime = +new Date()
   let gameover;
   try {
-    gameover = await compute()
+    gameover = await game.readGame()
   } catch (err) {
     console.error(err)
   }
@@ -56,16 +65,8 @@ async function start () {
     const endTime = +new Date()
     const delta = endTime - startTime
     const delay = delta < Config.tickTime ? Config.tickTime : 0
-    console.log(delta)
-    setTimeout(start, delay)
+    console.log('reading game time: ', delta)
+    setTimeout(startReadingGame, delay)
   }
 }
-
-nightmare
-  .goto('http://chro-ma.com/minigame')
-  .wait('#start')
-  .click('#start')
-  .wait('.avatar-deimos-asset')
-  .then(start)
-  .catch(console.error)
-
+*/
