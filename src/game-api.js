@@ -1,7 +1,14 @@
-const BrowserAPI = {
-  getBrowserDatas: function () {
+class GameAPI {
+  static getPixelsFromTranslate (str) {
+    const regex = /(\d+)px/g
+    const x = +regex.exec(str)[1]
+    const y = +regex.exec(str)[1]
+    return { x, y }
+  }
+
+  static getGameDatas () {
     const datas = {
-      transforms: {
+      pixelPositions: {
         player: undefined,
         enemies: [],
         bullets: []
@@ -14,16 +21,16 @@ const BrowserAPI = {
     }
 
     // player
-    datas.transforms.player = document.getElementsByClassName('avatar-deimos-asset')[0].style.transform
+    datas.pixelPositions.player = GameAPI.getPixelsFromTranslate(document.getElementsByClassName('avatar-deimos-asset')[0].style.transform)
     // enemies
     const enemies = document.getElementsByClassName('monster-deimos-asset')
     for (let i = 0, l = enemies.length; i < l ; i++) {
-      datas.transforms.enemies.push(enemies[i].style.transform)
+      datas.pixelPositions.enemies.push(GameAPI.getPixelsFromTranslate(enemies[i].style.transform))
     }
     // bullets
     const bullets = document.querySelectorAll('[id^=projectile]')
     for (let i = 0, l = bullets.length; i < l ; i++) {
-      datas.transforms.bullets.push(bullets[i].style.transform)
+      datas.pixelPositions.bullets.push(GameAPI.getPixelsFromTranslate(bullets[i].style.transform))
     }
 
     // hp
@@ -38,4 +45,4 @@ const BrowserAPI = {
   }
 }
 
-module.exports = BrowserAPI
+module.exports = GameAPI

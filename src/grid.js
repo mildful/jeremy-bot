@@ -1,13 +1,6 @@
 const VirtualGrid = require('./virtual-grid')
 
 class Grid {
-  static getPixelsFromTranslate (str) {
-    const regex = /(\d+)px/g
-    const x = +regex.exec(str)[1]
-    const y = +regex.exec(str)[1]
-    return { x, y }
-  }
-
   /**
    * Instanciate a grid
    * @param {number} cols
@@ -34,19 +27,18 @@ class Grid {
     return Math.ceil(px / cellSize)
   }
 
-  evalRawTransforms ({ player, enemies, bullets }) {
+  evalPixelPositions ({ player, enemies, bullets }) {
     this.vgrid.reset()
-    this.evalRawTransform(Grid.GAME_OBJECTS.Player, player)
-    enemies.forEach(enemy => this.evalRawTransform(Grid.GAME_OBJECTS.Enemy, enemy))
-    bullets.forEach(bullet => this.evalRawTransform(Grid.GAME_OBJECTS.Bullet, bullet))
+    this.evalPixelPosition(Grid.GAME_OBJECTS.Player, player)
+    enemies.forEach(enemy => this.evalPixelPosition(Grid.GAME_OBJECTS.Enemy, enemy))
+    bullets.forEach(bullet => this.evalPixelPosition(Grid.GAME_OBJECTS.Bullet, bullet))
   }
 
-  evalRawTransform (gameObject, transform) {
-    const pixels = Grid.getPixelsFromTranslate(transform)
+  evalPixelPosition (gameObject, pixelPosition) {
     this.vgrid.set(
       gameObject,
-      this.calcCoordsFromPixels(pixels.x, false),
-      this.calcCoordsFromPixels(pixels.y, true)
+      this.calcCoordsFromPixels(pixelPosition.x, false),
+      this.calcCoordsFromPixels(pixelPosition.y, true)
     )
   }
 }

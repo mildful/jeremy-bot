@@ -29,12 +29,12 @@ const grid = new Grid(
 const ui = new UI(grid, false)
 
 // start !
-const getBrowserDatasProxy = new Function('return ' + BrowserAPI.getBrowserDatas.toString())()
+const getGameDatasProxy = new Function('return ' + GameAPI.getGameDatas.toString())()
 const compute = () => {
   return nightmare
-    .evaluate(getBrowserDatasProxy)
+    .evaluate(getGameDatasProxy)
     .then(datas => {
-      grid.evalRawTransforms(datas.transforms)
+      grid.evalPixelPositions(datas.pixelPositions)
       // ui.render()
       // doing this add ~25ms of computation
       Logger.logDatas(datas.metadatas, ui.getStringGrid(), err => {
