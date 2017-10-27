@@ -36,29 +36,29 @@ const compute = () => {
     .then(datas => {
       grid.evalRawTransforms(datas.transforms)
       // ui.render()
-      const metadatas = {
-        hp: datas.hp,
-        gameover: datas.gameover
-      }
-      // doing this add ~20ms of computation
-      Logger.logDatas(metadatas, ui.getStringGrid(), err => {
+      // doing this add ~25ms of computation
+      Logger.logDatas(datas.metadatas, ui.getStringGrid(), err => {
         if (err) console.error(err)
       })
+      return datas.metadatas.hp <= 0
     })
 }
 
 async function start () {
   const startTime = +new Date()
+  let gameover;
   try {
-    await compute()
+    gameover = await compute()
   } catch (err) {
     console.error(err)
   }
-  const endTime = +new Date()
-  const delta = endTime - startTime
-  const delay = delta < Config.tickTime ? Config.tickTime : 0
-  console.log(delta, delay)
-  setTimeout(start, delay)
+  if (gameover === false) {
+    const endTime = +new Date()
+    const delta = endTime - startTime
+    const delay = delta < Config.tickTime ? Config.tickTime : 0
+    console.log(delta)
+    setTimeout(start, delay)
+  }
 }
 
 nightmare
@@ -66,7 +66,6 @@ nightmare
   .wait('#start')
   .click('#start')
   .wait('.avatar-deimos-asset')
-  .wait(100)
   .then(start)
   .catch(console.error)
 

@@ -3,7 +3,7 @@ const Config = {
   height: 720,
   gridCols: 160,
   gridRows: 90,
-  tickTime: 200,
+  tickTime: 1000,
   debug: true,
   logFolder: 'logs/',
   train: false

@@ -6,8 +6,11 @@ const BrowserAPI = {
         enemies: [],
         bullets: []
       },
-      hp: null,
-      gameover: false
+      metadatas: {
+        hp: null,
+        enemiesCount: 0,
+        score: 0
+      }
     }
 
     // player
@@ -24,7 +27,12 @@ const BrowserAPI = {
     }
 
     // hp
-    datas.hp = parseInt(document.getElementById('hp-bar-current').style.width)
+    datas.metadatas.hp = parseInt(document.getElementById('hp-bar-current').style.width)
+    //enemis count
+    datas.metadatas.enemiesCount = enemies.length
+    // score
+    const timeStr = document.getElementById('game-timer').textContent.split(':')
+    datas.metadatas.score = timeStr[0] * 60 + parseFloat(timeStr[1])
 
     return datas
   }
