@@ -31,27 +31,32 @@ const ui = new UI(grid, false)
 // init game
 const game = new GameAPI(nightmare)
 
-const update = function () {
+let interval
+
+const onGameStart = function () {
+  interval = setInterval(() => game.readGame(), Config.tickTime)
+  setInterval(() => game.moveRight(), 1000)
+}
+
+const onTick = function () {
   grid.evalPixelPositions(game.gameDatas.pixelPositions)
   // ui.render()
   // doing this add ~25ms of computation (at least, on my computer of course - Win7 64bits, i7 6600U, 8GB ram)
   Logger.logDatas(game.gameDatas.metadatas, ui.getStringGrid(), err => {
     if (err) console.error(err)
   })
-  game.punch()
   return game.gameDatas.metadatas.hp <= 0
 }
 
-let interval;
-
-game.nextTick(update)
-game.onGameEnd(() => {
+const onGameOver = function () {
   clearInterval(interval)
   console.log('Game over. SCORE: ', game.gameDatas.metadatas.score)
-})
-game.startNewGame()
-  .then(() => interval = setInterval(() => game.readGame(), Config.tickTime))
-  .catch(console.error)
+}
+
+game.onGameStart(onGameStart)
+game.nextTick(onTick)
+game.onGameEnd(onGameOver)
+game.startNewGame().catch(console.error)
 
 // use this to debug read time
 /*

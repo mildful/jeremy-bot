@@ -53,16 +53,21 @@ const _getPixelsFromTranslate = function (str) {
 
 class GameAPI {
   static createCustomNightmareActions () {
-    const actionMaker = (name, type) => {
+    // todo : debug this. Key is not pressed/release/triggered using this register function
+    /*const actionMaker = function (name, type) {
       // https://github.com/rosshinkley/nightmare-examples/blob/master/docs/beginner/action.md
       // https://github.com/electron/electron/blob/master/docs/api/web-contents.md#contentssendinputeventevent
       Nightmare.action(name, function (name, options, parent, win, renderer, done) {
         parent.respondTo(name, function (keyCode, respondDone) {
           win.focus()
-          win.webContents.sendInputEvent({
-            type: type,
-            keyCode: keyCode
-          }).then(respondDone).catch(console.error)
+          try {
+            win.webContents.sendInputEvent({
+              type: type,
+              keyCode: keyCode
+            })
+          } finally {
+            respondDone()
+          }
         })
         done()
       }, function (keyCode, done) {
@@ -71,7 +76,65 @@ class GameAPI {
     }
     actionMaker('pressKey', 'keyDown')
     actionMaker('releaseKey', 'keyUp')
-    actionMaker('triggerKey', 'char')
+    actionMaker('triggerKey', 'char')*/
+
+    // trigger key
+    Nightmare.action('triggerKey', function (name, options, parent, win, renderer, done) {
+      parent.respondTo(name, function (keyCode, respondDone) {
+        win.focus()
+        try {
+          win.webContents.sendInputEvent({
+            type: 'keyUp',
+            keyCode: keyCode
+          })
+          setTimeout(function () { win.webContents.sendInputEvent({
+            type: 'keyDown',
+            keyCode: keyCode
+          })}, 10)
+        } finally {
+          respondDone()
+        }
+      })
+      done()
+    }, function (keyCode, done) {
+      this.child.call('triggerKey', keyCode, done)
+    })
+
+    // press key
+    Nightmare.action('pressKey', function (name, options, parent, win, renderer, done) {
+      parent.respondTo(name, function (keyCode, respondDone) {
+        win.focus()
+        try {
+          win.webContents.sendInputEvent({
+            type: 'keyDown',
+            keyCode: keyCode
+          })
+        } finally {
+          respondDone()
+        }
+      })
+      done()
+    }, function (keyCode, done) {
+      this.child.call('pressKey', keyCode, done)
+    })
+
+    // release key
+    Nightmare.action('releaseKey', function (name, options, parent, win, renderer, done) {
+      parent.respondTo(name, function (keyCode, respondDone) {
+        win.focus()
+        try {
+          win.webContents.sendInputEvent({
+            type: 'keyUp',
+            keyCode: keyCode
+          })
+        } finally {
+          respondDone()
+        }
+      })
+      done()
+    }, function (keyCode, done) {
+      this.child.call('releaseKey', keyCode, done)
+    })
   }
 
   constructor (nightmareInstance) {
@@ -81,6 +144,7 @@ class GameAPI {
     // private fields
     this._nextTickCbs = []
     this._gameEndCbs = []
+    this._gameStartCbs = []
   }
 
   _init () {
@@ -109,6 +173,7 @@ class GameAPI {
     return this.nightmare
       .evaluate(() => document.getElementById('start') ? '#start' : '#menu_restart')
       .then(id => this.nightmare.click(id).wait('.avatar-deimos-asset'))
+      .then(() => _dispatch(this._gameStartCbs))
   }
 
   readGame () {
@@ -117,7 +182,7 @@ class GameAPI {
       return new Promise(resolve => resolve(true))
     }
     return this.nightmare
-      // get raw datas from stringified function
+    // get raw datas from stringified function
       .evaluate(_getGameDatasProxy)
       .then(({ transforms, metadatas }) => {
         // update instance's datas
@@ -142,6 +207,16 @@ class GameAPI {
           return false
         }
       })
+  }
+
+  restartGame () {
+    return this.nightmare
+      .refresh()
+      .then(this.startNewGame)
+  }
+
+  onGameStart (cb) {
+    this._gameStartCbs.push(cb)
   }
 
   nextTick (cb) {
@@ -177,11 +252,11 @@ class GameAPI {
   }
 
   jump () {
-    this.nightmare.triggerKey(GameAPI.KEY_CONTROLS.Jump)
+    this.nightmare.pressKey(GameAPI.KEY_CONTROLS.Jump)
   }
 
   punch () {
-    this.nightmare.triggerKey(GameAPI.KEY_CONTROLS.Punch)
+    // this.nightmare.triggerKey(GameAPI.KEY_CONTROLS.Punch)
   }
 }
 

@@ -29,9 +29,9 @@ class Grid {
 
   evalPixelPositions ({ player, enemies, bullets }) {
     this.vgrid.reset()
-    this.evalPixelPosition(Grid.GAME_OBJECTS.Player, player)
-    enemies.forEach(enemy => this.evalPixelPosition(Grid.GAME_OBJECTS.Enemy, enemy))
     bullets.forEach(bullet => this.evalPixelPosition(Grid.GAME_OBJECTS.Bullet, bullet))
+    enemies.forEach(enemy => this.evalPixelPosition(Grid.GAME_OBJECTS.Enemy, enemy))
+    this.evalPixelPosition(Grid.GAME_OBJECTS.Player, player)
   }
 
   evalPixelPosition (gameObject, pixelPosition) {
