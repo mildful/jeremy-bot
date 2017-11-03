@@ -35,14 +35,14 @@ class Grid {
   }
 
   evalPixelPosition (gameObject, pixelPosition) {
-    this.vgrid.set(
-      gameObject,
-      this.calcCoordFromPixels(pixelPosition.x, false),
-      this.calcCoordFromPixels(pixelPosition.y, true)
-    )
+    const x = this.calcCoordFromPixels(pixelPosition.x, false)
+    const y = this.calcCoordFromPixels(pixelPosition.y, true)
+    if (this.vgrid.isInXRange(x) && this.vgrid.isInYRange(y)) {
+      this.vgrid.set(gameObject, x, y)
+    }
   }
 }
 
-Grid.GAME_OBJECTS = { Player: 0, Enemy: 1, Bullet: 2 }
+Grid.GAME_OBJECTS = { Player: 0, Enemy: .5, Bullet: 1 }
 
 module.exports = Grid

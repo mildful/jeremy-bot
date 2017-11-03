@@ -17,10 +17,16 @@ class VirtualGrid {
     return VirtualGrid.index(this.cols, this.rows, x, y)
   }
 
+  isInXRange (x) {
+    return x >= 0 && x <= this.cols
+  }
+
+  isInYRange (y) {
+    return y >= 0 && y <= this.rows
+  }
+
   set (value, x, y) {
     if (value === undefined) throw new Error('`value` must be defined.')
-    if (x < 0 || x > this.cols) throw new Error('`x` is out of range.')
-    if (y < 0 || y > this.rows) throw new Error('`y` is out of range.')
     this.grid[this.index(x, y)] = value
   }
 

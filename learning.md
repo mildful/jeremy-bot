@@ -1,3 +1,23 @@
+CUSTOM NOTES
+
+Learner.init(GameManipulator, UI, 12, 4, 0.2);
+genomes / selection / mutation proba
+
+1 genome = 1 NN
+
+
+=======
+
+1. Initialiser le genome (definir le nomre de genomes, la "selection" et la prob de mutation)
+2. Creer les genomes jusqu'à atteindre le nombre [3, 4, 4, 1]
+3. commentation la generation
+3.1 select best genomes
+3.2 x-over (except for 2 genomes)
+3.3 mutation
+3.4 execute generation (recursif)
+
+==============================================
+
 # How are we gonna learn ?
 
 This document describe the learning process. It consists of neural networks and genetic algorithm.
