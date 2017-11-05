@@ -1,5 +1,44 @@
 const _ = require('lodash');
 
+class Finder {
+  constructor (cols, rows, startIndex) {
+    this.cols = cols
+    this.rows = rows
+    this.maxIndex = cols * rows
+    this.index = startIndex
+  }
+
+  isInRange (index) {
+    return index >= 0 && index < this.maxIndex
+  }
+
+  up (nb) {
+    const newIndex = this.index - (this.cols * nb)
+    if (this.isInRange(newIndex)) this.index = newIndex
+    return this
+  }
+
+  down (nb) {
+    this.up(-nb)
+    return this
+  }
+
+  left (nb) {
+    const newIndex = this.index - nb
+    if (this.isInRange(newIndex)) this.index = newIndex
+    return this
+  }
+
+  right (nb) {
+    this.left(-nb)
+    return this
+  }
+
+  get () {
+    return this.index
+  }
+}
+
 class VirtualGrid {
   static index (cols, rows, x, y) {
     return cols * (rows - y - 1) + x
@@ -48,6 +87,10 @@ class VirtualGrid {
 
   reset () {
     this.grid.fill(-1)
+  }
+
+  finder (startIndex) {
+    return new Finder(this.cols, this.rows, startIndex)
   }
 }
 

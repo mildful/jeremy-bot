@@ -35,7 +35,7 @@ class Learner {
     return Object.assign({}, jsonA, { neurons: neuronsA })
   }
 
-  constructor (nightmareConfig, generationSize = 8, selectionCount = 3, mutationRate = .2) {
+  constructor (nightmareConfig, generationSize = 2, selectionCount = 1, mutationRate = .2) {
     // public fields
     this.generation = 0
     this.genome = 0
@@ -116,7 +116,7 @@ class Learner {
     const onGameStart = () => interval = setInterval(() => game.readGame(), Config.tickTime)
     const onGameTick = () => {
       grid.evalPixelPositions(game.gameDatas.pixelPositions)
-      const inputs = grid.vgrid.grid
+      const inputs = grid.getProximityGrid(Config.proximityGridSize)
       const outputs = genome.activate(inputs)
       Learner.executeOutputs(game, outputs)
     }
