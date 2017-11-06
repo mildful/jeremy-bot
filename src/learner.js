@@ -35,7 +35,7 @@ class Learner {
     return Object.assign({}, jsonA, { neurons: neuronsA })
   }
 
-  constructor (nightmareConfig, generationSize = 2, selectionCount = 1, mutationRate = .2) {
+  constructor (nightmareConfig, generationSize = 16, selectionCount = 6, mutationRate = .2) {
     // public fields
     this.generation = 0
     this.genome = 0
@@ -121,6 +121,7 @@ class Learner {
       Learner.executeOutputs(game, outputs)
     }
     const onGameEnd = () => {
+      clearInterval(interval)
       genome.fitness = game.gameDatas.metadatas.score
       nightmare.end().then(() => {
         nightmare.proc.kill()
