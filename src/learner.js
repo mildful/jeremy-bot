@@ -101,11 +101,12 @@ class Learner {
       Config.width, Config.height,
       { debug: true }
     )
+    const inputLenght = Math.pow((Config.proximityGridSize * 2) + 1, 2)
     return {
       nightmare,
       game: new GameAPI(nightmare),
       grid,
-      genome: genome || new Architect.Perceptron(grid.vgrid.grid.length, 4, 4, 3)
+      genome: genome || new Architect.Perceptron(inputLenght, 40, 35, 20, 3)
     }
   }
 
@@ -122,7 +123,7 @@ class Learner {
     }
     const onGameEnd = () => {
       clearInterval(interval)
-      genome.fitness = game.gameDatas.metadatas.score
+      genome.fitness = game.gameDatas.metadatas.score * 5
       nightmare.end().then(() => {
         nightmare.proc.kill()
         nightmare.ended = true

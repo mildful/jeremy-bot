@@ -256,7 +256,7 @@ class GameAPI {
   }
 
   punch () {
-    // this.nightmare.triggerKey(GameAPI.KEY_CONTROLS.Punch)
+    this.nightmare.triggerKey(GameAPI.KEY_CONTROLS.Punch)
   }
 }
 
